@@ -41,3 +41,14 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Root screenshots (Capturas de pantalla)
+Captura de pantalla*.png
+
+# Temporary and log files
+token_resp.json
+*.log
+
+# IDE settings
+.vscode/
+.idea/

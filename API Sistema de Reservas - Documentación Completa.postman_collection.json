@@ -1,0 +1,1443 @@
+{
+  "info": {
+    "_postman_id": "c9b087b8-3698-40cd-bd67-a4a3208409a8",
+    "name": "API Sistema de Reservas - Documentación Completa",
+    "description": "Coleccion de API REST para un sistema de reservas, enfocado al area universitaria\n\n## Información General\n\n**Versión:** 1.0.0  \n**Base URL:** `http://tu-dominio.com/api`  \n**Autenticación:** JWT (JSON Web Tokens)  \n**Content-Type:** `application/json`",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50635522",
+    "_collection_link": "https://go.postman.co/collection/49298540-c9b087b8-3698-40cd-bd67-a4a3208409a8?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Configuración de Autenticación en Postman",
+      "item": [
+        {
+          "name": "LOGIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {\r",
+                  "    const json = pm.response.json();\r",
+                  "    if (json.access_token) {\r",
+                  "        // Guarda el token del admin como variable de entorno\r",
+                  "        pm.environment.set(\"TOKEN_ADMIN\", json.access_token);\r",
+                  "    }\r",
+                  "}\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@uni.com\",\r\n  \"password\": \"admin123\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            },
+            "description": "### **Endpoint: Iniciar Sesión (Login)**\n\nEste endpoint permite a los usuarios autenticarse en el sistema proporcionando sus credenciales (correo electrónico y contraseña). Al autenticarse exitosamente, el sistema devuelve un token de acceso JWT que debe ser utilizado para realizar peticiones a endpoints protegidos.\n\n---\n\n### **Método HTTP**\n\n- **POST**\n    \n\n### **URL**\n\n```\n{{BASE_URL}}/api/login\n\n ```\n\n### **Headers Requeridos**\n\n- `Accept: application/json`\n    \n- `Content-Type: application/json`\n    \n\n### **Parámetros de Consulta**\n\n- Ninguno\n    \n\n### **Cuerpo de la Petición (Body)**\n\nEl cuerpo debe enviarse en formato JSON con los siguientes campos:\n\n``` json\n{\n  \"email\": \"carlos@uni.com\",\n  \"password\": \"carlos123\"\n}\n\n ```\n\n**Campos del Body:**\n\n- `email` (string): Correo electrónico del usuario registrado en el sistema\n    \n- `password` (string): Contraseña del usuario\n    \n\n---\n\n### **Respuesta Exitosa**\n\n**Código de Estado:** `200 OK`\n\n**Descripción de Campos:**\n\n- `access_token` (string): Token JWT de acceso que debe ser incluido en el header Authorization de las peticiones subsecuentes\n    \n- `token_type` (string): Tipo de token, generalmente \"bearer\"\n    \n- `expires_in` (integer): Tiempo de expiración del token en segundos (7200 segundos = 2 horas)\n    \n- `user` (object): Información del usuario autenticado\n    \n    - `id` (integer): Identificador único del usuario\n        \n    - `role_id` (integer): Identificador del rol asignado al usuario\n        \n    - `name` (string): Nombre completo del usuario\n        \n    - `email` (string): Correo electrónico del usuario\n        \n    - `email_verified_at` (string|null): Fecha y hora de verificación del correo electrónico en formato ISO 8601, o null si no ha sido verificado\n        \n    - `must_change_password` (integer): Indicador si el usuario debe cambiar su contraseña (0 = no, 1 = sí)\n        \n    - `estado` (integer): Estado del usuario (1 = activo, 0 = inactivo)\n        \n    - `created_at` (string): Fecha y hora de creación del usuario en formato ISO 8601\n        \n    - `updated_at` (string): Fecha y hora de la última actualización del usuario en formato ISO 8601\n        \n\n**Ejemplo de Respuesta:**\n\n``` json\n{\n  \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ...\",\n  \"token_type\": \"bearer\",\n  \"expires_in\": 7200,\n  \"user\": {\n    \"id\": 2,\n    \"role_id\": 2,\n    \"name\": \"Carlos Prueba\",\n    \"email\": \"carlos@uni.com\",\n    \"email_verified_at\": null,\n    \"must_change_password\": 0,\n    \"estado\": 1,\n    \"created_at\": \"2025-12-06T02:54:30.000000Z\",\n    \"updated_at\": \"2025-12-06T03:06:00.000000Z\"\n  }\n}\n\n ```\n\n---\n\n### **Notas Adicionales**\n\n- El token de acceso debe ser incluido en el header `Authorization` con el formato: `Bearer {access_token}` para acceder a endpoints protegidos\n    \n- El token tiene una validez de 2 horas (7200 segundos), después de lo cual será necesario autenticarse nuevamente\n    \n- Las fechas están en formato ISO 8601 con zona horaria UTC\n    \n- Si las credenciales son incorrectas, el sistema devolverá un error de autenticación"
+          },
+          "response": []
+        },
+        {
+          "name": "API/ME",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzY0OTkwNDE4LCJleHAiOjE3NjQ5OTc2MTgsIm5iZiI6MTc2NDk5MDQxOCwianRpIjoiekxIdmFVVHRvamg1V055USIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.qNIN1uDbsDUUEQFaFWTQFoC9_fW3Alt3htHLaNG88Ng",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/me",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "me"
+              ]
+            },
+            "description": "### Endpoint: Obtener Información del Usuario Autenticado (Me)\n\nEste endpoint permite obtener la información básica del usuario actualmente autenticado en el sistema, incluyendo su ID, nombre, correo electrónico y rol asignado.\n\n**Método HTTP**\n\n- GET\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/me\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- id (integer): Identificador único del usuario\n    \n- name (string): Nombre completo del usuario\n    \n- email (string): Correo electrónico del usuario\n    \n- role (object): Información del rol asignado al usuario\n    \n    - id (integer): Identificador único del rol\n        \n    - nombre (string): Nombre del rol (e.g., \"admin\")\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"id\": 1,\n  \"name\": \"Admin Universidad\",\n  \"email\": \"admin@uni.com\",\n  \"role\": {\n    \"id\": 1,\n    \"nombre\": \"admin\"\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Este endpoint requiere autenticación con un token JWT válido\n    \n- Si el token es inválido o no se proporciona, se devuelve un error 401 (No autenticado)\n    \n- Las fechas no están incluidas en esta respuesta, ya que se centra en datos básicos del usuario"
+          },
+          "response": []
+        },
+        {
+          "name": "PRIMER LOGIN (CAMBIO CONTRASENA)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"user_id\": 6,\r\n  \"new_password\": \"raw123\",\r\n  \"new_password_confirmation\": \"raw123\"\r\n}\r\n\r\n"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/auth/change-password-first-login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "change-password-first-login"
+              ]
+            },
+            "description": "### **Endpoint: Cambio de Contraseña en Primer Login**\n\nEste endpoint permite a los usuarios cambiar su contraseña cuando inician sesión por primera vez en el sistema. Es utilizado cuando el campo `must_change_password` del usuario está establecido en 1, indicando que es obligatorio actualizar la contraseña antes de poder utilizar el sistema completamente.\n\n---\n\n### **Método HTTP**\n\n- **POST**\n    \n\n### **URL**\n\n```\n{{BASE_URL}}/api/auth/change-password-first-login\n\n ```\n\n### **Headers Requeridos**\n\n- `Accept: application/json`\n    \n- `Content-Type: application/json`\n    \n\n### **Parámetros de Consulta**\n\n- Ninguno\n    \n\n### **Cuerpo de la Petición (Body)**\n\nEl cuerpo debe enviarse en formato JSON con los siguientes campos:\n\n``` json\n{\n  \"user_id\": 3,\n  \"new_password\": \"raw123\",\n  \"new_password_confirmation\": \"raw123\"\n}\n\n ```\n\n**Campos del Body:**\n\n- `user_id` (integer): Identificador único del usuario que debe cambiar su contraseña\n    \n- `new_password` (string): Nueva contraseña que el usuario desea establecer\n    \n- `new_password_confirmation` (string): Confirmación de la nueva contraseña (debe coincidir con `new_password`)\n    \n\n---\n\n### **Respuesta Exitosa**\n\n**Código de Estado:** `200 OK`\n\n**Descripción de Campos:**\n\n- `message` (string): Mensaje de confirmación indicando que la contraseña fue cambiada exitosamente\n    \n- `user` (object): Información actualizada del usuario\n    \n    - `id` (integer): Identificador único del usuario\n        \n    - `role_id` (integer): Identificador del rol asignado al usuario\n        \n    - `name` (string): Nombre completo del usuario\n        \n    - `email` (string): Correo electrónico del usuario\n        \n    - `must_change_password` (integer): Indicador actualizado a 0, confirmando que ya no es necesario cambiar la contraseña\n        \n    - `estado` (integer): Estado del usuario (1 = activo, 0 = inactivo)\n        \n    - `created_at` (string): Fecha y hora de creación del usuario en formato ISO 8601\n        \n    - `updated_at` (string): Fecha y hora de la última actualización del usuario en formato ISO 8601\n        \n\n**Ejemplo de Respuesta:**\n\n``` json\n{\n  \"message\": \"Contraseña cambiada exitosamente\",\n  \"user\": {\n    \"id\": 3,\n    \"role_id\": 2,\n    \"name\": \"Usuario Nuevo\",\n    \"email\": \"nuevo@uni.com\",\n    \"must_change_password\": 0,\n    \"estado\": 1,\n    \"created_at\": \"2025-12-06T10:30:00.000000Z\",\n    \"updated_at\": \"2025-12-06T15:45:00.000000Z\"\n  }\n}\n\n ```\n\n---\n\n### **Notas Adicionales**\n\n- Este endpoint debe ser utilizado únicamente cuando el usuario tiene `must_change_password` establecido en 1\n    \n- La nueva contraseña debe cumplir con los requisitos de seguridad del sistema (longitud mínima, complejidad, etc.)\n    \n- Los campos `new_password` y `new_password_confirmation` deben ser idénticos, de lo contrario el sistema devolverá un error de validación\n    \n- Después de cambiar la contraseña exitosamente, el usuario podrá iniciar sesión normalmente con sus nuevas credenciales\n    \n- Las fechas están en formato ISO 8601 con zona horaria UTC\n    \n- Si el `user_id` no existe o la validación falla, el sistema devolverá un error apropiado"
+          },
+          "response": []
+        },
+        {
+          "name": "LOGOUT",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/logout",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "logout"
+              ]
+            },
+            "description": "### Descripción\n\nEste endpoint cierra la sesión del usuario actual e invalida el token JWT. Después de hacer logout, el token ya no puede ser usado para autenticación y el usuario debe iniciar sesión nuevamente.\n\n### Endpoint\n\n```\nPOST /api/logout\n\n ```\n\n### Autenticación\n\nEste endpoint requiere autenticación mediante Bearer Token en el header Authorization.\n\n### Headers\n\n```\nHeaderValorDescripciónAcceptapplication/jsonFormato de respuesta esperadoAuthorizationBearer {token}Token de autenticación JWTContent-Typeapplication/jsonFormato del contenido\n\n ```\n\n### Parámetros\n\nNo requiere parámetros en el body.\n\n### Ejemplo de Petición\n\n```\nPOST /api/logout\nAuthorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...\n\n ```\n\n### Respuestas\n\n#### Éxito (200 OK)\n\njson\n\n```\n{\n  \"message\": \"Sesión cerrada correctamente\"\n}\n\n ```\n\n#### Error de Autenticación (401 Unauthorized)\n\njson\n\n```\n{\n  \"message\": \"Unauthenticated.\"\n}\n\n ```\n\n### Notas\n\n- Después del logout, el token JWT queda invalidado\n    \n- El usuario debe iniciar sesión nuevamente para obtener un nuevo token\n    \n- Es una buena práctica hacer logout cuando el usuario cierra sesión en la aplicación\n    \n- El token invalidado no puede ser reutilizado"
+          },
+          "response": []
+        }
+      ],
+      "description": "**Bearer Token**\n\nPara los endpoints protegidos, configura el token en Postman:\n\n1. Ve a la pestaña **Authorization**\n    \n2. Selecciona **Type:** Bearer Token\n    \n3. Pega tu token JWT en el campo **Token**\n    \n\n```\nBearer \neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...\n\n ```"
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "CREAR USUARIO",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzY0OTkwNDE4LCJleHAiOjE3NjQ5OTc2MTgsIm5iZiI6MTc2NDk5MDQxOCwianRpIjoiekxIdmFVVHRvamg1V055USIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.qNIN1uDbsDUUEQFaFWTQFoC9_fW3Alt3htHLaNG88Ng",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Raul Trvn\",\r\n  \"email\": \"raul@uni.com\",\r\n  \"password\": \"temp123\",\r\n  \"role_id\": 2\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/usuarios",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "usuarios"
+              ]
+            },
+            "description": "# CREAR USUARIO\n\n## Descripción\n\nEste endpoint permite crear un nuevo usuario en el sistema. Solo usuarios con rol de administrador pueden acceder a esta funcionalidad.\n\n## Endpoint\n\n```\nPOST {{BASE_URL}}/api/usuarios\n\n ```\n\n## Autenticación\n\nEste endpoint requiere autenticación mediante Bearer Token en el header Authorization.\n\n## Headers\n\n| Header | Valor | Descripción |\n| --- | --- | --- |\n| Accept | application/json | Formato de respuesta esperado |\n| Authorization | Bearer {{TOKEN_ADMIN}} | Token de autenticación del administrador |\n| Content-Type | application/json | Formato del cuerpo de la petición |\n\n## Body (JSON)\n\n``` json\n{\n  \"name\": \"string\",\n  \"email\": \"string\",\n  \"password\": \"string\",\n  \"role_id\": number\n}\n\n ```\n\n### Parámetros del Body\n\n| Campo | Tipo | Requerido | Descripción |\n| --- | --- | --- | --- |\n| name | string | Sí | Nombre completo del usuario |\n| email | string | Sí | Correo electrónico del usuario (debe ser único) |\n| password | string | Sí | Contraseña del usuario |\n| role_id | number | Sí | ID del rol asignado al usuario |\n\n## Ejemplo de Petición\n\n``` json\n{\n  \"name\": \"Alejandro Trvn\",\n  \"email\": \"alejandro@uni.com\",\n  \"password\": \"temp123\",\n  \"role_id\": 2\n}\n\n ```\n\n## Respuestas\n\n### Éxito (201 Created)\n\n``` json\n{\n  \"message\": \"Usuario creado exitosamente\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Alejandro Trvn\",\n    \"email\": \"alejandro@uni.com\",\n    \"role_id\": 2,\n    \"created_at\": \"2024-01-15T10:30:00.000000Z\",\n    \"updated_at\": \"2024-01-15T10:30:00.000000Z\"\n  }\n}\n\n ```\n\n### Error de Validación (422 Unprocessable Entity)\n\n``` json\n{\n  \"message\": \"Error de validación\",\n  \"errors\": {\n    \"email\": [\"El email ya está registrado\"],\n    \"password\": [\"La contraseña debe tener al menos 6 caracteres\"]\n  }\n}\n\n ```\n\n### Error de Autenticación (401 Unauthorized)\n\n``` json\n{\n  \"message\": \"No autenticado\"\n}\n\n ```\n\n### Error de Autorización (403 Forbidden)\n\n``` json\n{\n  \"message\": \"No tienes permisos para realizar esta acción\"\n}\n\n ```\n\n## Notas\n\n- Solo usuarios con rol de administrador pueden crear nuevos usuarios\n    \n- El email debe ser único en el sistema\n    \n- La contraseña se almacena encriptada en la base de datos\n    \n- Los roles disponibles deben existir previamente en el sistema"
+          },
+          "response": []
+        },
+        {
+          "name": "LISTAR USUARIOS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzY0OTkwNDE4LCJleHAiOjE3NjQ5OTc2MTgsIm5iZiI6MTc2NDk5MDQxOCwianRpIjoiekxIdmFVVHRvamg1V055USIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.qNIN1uDbsDUUEQFaFWTQFoC9_fW3Alt3htHLaNG88Ng",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/usuarios",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "usuarios"
+              ]
+            },
+            "description": "# LISTAR USUARIOS\n\n## Descripción\n\nEste endpoint permite obtener la lista completa de todos los usuarios registrados en el sistema. Retorna información detallada de cada usuario incluyendo su rol asignado.\n\n## Endpoint\n\n```\nGET {{BASE_URL}}/api/usuarios\n\n ```\n\n## Autenticación\n\nEste endpoint requiere autenticación mediante Bearer Token en el header Authorization.\n\n## Headers\n\n| Header | Valor | Descripción |\n| --- | --- | --- |\n| Accept | application/json | Formato de respuesta esperado |\n| Authorization | Bearer {{TOKEN_ADMIN}} | Token de autenticación del administrador |\n\n## Parámetros\n\nEste endpoint no requiere parámetros adicionales.\n\n## Respuestas\n\n### Éxito (200 OK)\n\n``` json\n{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"name\": \"Juan Pérez\",\n      \"email\": \"juan@example.com\",\n      \"role_id\": 1,\n      \"role\": {\n        \"id\": 1,\n        \"name\": \"Administrador\"\n      },\n      \"created_at\": \"2024-01-15T10:30:00.000000Z\",\n      \"updated_at\": \"2024-01-15T10:30:00.000000Z\"\n    },\n    {\n      \"id\": 2,\n      \"name\": \"María García\",\n      \"email\": \"maria@example.com\",\n      \"role_id\": 2,\n      \"role\": {\n        \"id\": 2,\n        \"name\": \"Usuario\"\n      },\n      \"created_at\": \"2024-01-16T14:20:00.000000Z\",\n      \"updated_at\": \"2024-01-16T14:20:00.000000Z\"\n    }\n  ]\n}\n\n ```\n\n### Respuesta Vacía (200 OK)\n\n``` json\n{\n  \"data\": []\n}\n\n ```\n\n### Error de Autenticación (401 Unauthorized)\n\n``` json\n{\n  \"message\": \"No autenticado\"\n}\n\n ```\n\n### Error de Autorización (403 Forbidden)\n\n``` json\n{\n  \"message\": \"No tienes permisos para realizar esta acción\"\n}\n\n ```\n\n### Error del Servidor (500 Internal Server Error)\n\n``` json\n{\n  \"message\": \"Error interno del servidor\",\n  \"error\": \"Descripción del error\"\n}\n\n ```\n\n## Estructura de Datos\n\n### Usuario\n\n| Campo | Tipo | Descripción |\n| --- | --- | --- |\n| id | number | Identificador único del usuario |\n| name | string | Nombre completo del usuario |\n| email | string | Correo electrónico del usuario |\n| role_id | number | ID del rol asignado |\n| role | object | Objeto con información del rol |\n| created_at | string | Fecha y hora de creación (ISO 8601) |\n| updated_at | string | Fecha y hora de última actualización (ISO 8601) |\n\n### Rol\n\n| Campo | Tipo | Descripción |\n| --- | --- | --- |\n| id | number | Identificador único del rol |\n| name | string | Nombre del rol |\n\n## Notas\n\n- Solo usuarios autenticados con permisos de administrador pueden acceder a este endpoint\n    \n- La respuesta incluye todos los usuarios del sistema sin paginación\n    \n- Cada usuario incluye información de su rol asociado\n    \n- Las contraseñas no se incluyen en la respuesta por seguridad"
+          },
+          "response": []
+        },
+        {
+          "name": "VER USUARIO {ID}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzY0OTkwNDE4LCJleHAiOjE3NjQ5OTc2MTgsIm5iZiI6MTc2NDk5MDQxOCwianRpIjoiekxIdmFVVHRvamg1V055USIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.qNIN1uDbsDUUEQFaFWTQFoC9_fW3Alt3htHLaNG88Ng",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/usuarios/{{USER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{USER_ID}}"
+              ]
+            },
+            "description": "# VER USUARIO {ID}\n\n## Descripción\n\nEste endpoint permite obtener la información detallada de un usuario específico mediante su ID. Retorna todos los datos del usuario incluyendo su rol asignado.\n\n## Endpoint\n\n```\nGET {{BASE_URL}}/api/usuarios/{{USER_ID}}\n\n ```\n\n## Autenticación\n\nEste endpoint requiere autenticación mediante Bearer Token en el header Authorization.\n\n## Headers\n\n| Header | Valor | Descripción |\n| --- | --- | --- |\n| Accept | application/json | Formato de respuesta esperado |\n| Authorization | Bearer {{TOKEN_ADMIN}} | Token de autenticación del administrador |\n| Content-Type | application/json | Formato del contenido |\n\n## Parámetros de Ruta\n\n| Parámetro | Tipo | Requerido | Descripción |\n| --- | --- | --- | --- |\n| USER_ID | number | Sí | ID único del usuario a consultar |\n\n## Ejemplo de Petición\n\n```\nGET {{BASE_URL}}/api/usuarios/2\n\n ```\n\n## Respuestas\n\n### Éxito (200 OK)\n\n``` json\n{\n  \"data\": {\n    \"id\": 2,\n    \"name\": \"María García\",\n    \"email\": \"maria@example.com\",\n    \"role_id\": 2,\n    \"role\": {\n      \"id\": 2,\n      \"name\": \"Usuario\",\n      \"description\": \"Usuario estándar del sistema\"\n    },\n    \"created_at\": \"2024-01-16T14:20:00.000000Z\",\n    \"updated_at\": \"2024-01-16T14:20:00.000000Z\"\n  }\n}\n\n ```\n\n### Usuario No Encontrado (404 Not Found)\n\n``` json\n{\n  \"message\": \"Usuario no encontrado\",\n  \"error\": \"No existe un usuario con el ID proporcionado\"\n}\n\n ```\n\n### Error de Autenticación (401 Unauthorized)\n\n``` json\n{\n  \"message\": \"No autenticado\"\n}\n\n ```\n\n### Error de Autorización (403 Forbidden)\n\n``` json\n{\n  \"message\": \"No tienes permisos para realizar esta acción\"\n}\n\n ```\n\n### Error de Validación (422 Unprocessable Entity)\n\n``` json\n{\n  \"message\": \"Error de validación\",\n  \"errors\": {\n    \"USER_ID\": [\"El ID debe ser un número válido\"]\n  }\n}\n\n ```\n\n### Error del Servidor (500 Internal Server Error)\n\n``` json\n{\n  \"message\": \"Error interno del servidor\",\n  \"error\": \"Descripción del error\"\n}\n\n ```\n\n## Estructura de Datos\n\n### Usuario\n\n| Campo | Tipo | Descripción |\n| --- | --- | --- |\n| id | number | Identificador único del usuario |\n| name | string | Nombre completo del usuario |\n| email | string | Correo electrónico del usuario |\n| role_id | number | ID del rol asignado |\n| role | object | Objeto con información completa del rol |\n| created_at | string | Fecha y hora de creación (ISO 8601) |\n| updated_at | string | Fecha y hora de última actualización (ISO 8601) |\n\n### Rol\n\n| Campo | Tipo | Descripción |\n| --- | --- | --- |\n| id | number | Identificador único del rol |\n| name | string | Nombre del rol |\n| description | string | Descripción del rol |\n\n## Notas\n\n- Solo usuarios autenticados pueden acceder a este endpoint\n    \n- El ID del usuario debe ser un número entero positivo\n    \n- Si el usuario no existe, se retorna un error 404\n    \n- La contraseña del usuario no se incluye en la respuesta por seguridad\n    \n- La respuesta incluye información detallada del rol asociado al usuario"
+          },
+          "response": []
+        },
+        {
+          "name": "ACTUALIZAR USUARIO",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzY0OTkwNDE4LCJleHAiOjE3NjQ5OTc2MTgsIm5iZiI6MTc2NDk5MDQxOCwianRpIjoiekxIdmFVVHRvamg1V055USIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.qNIN1uDbsDUUEQFaFWTQFoC9_fW3Alt3htHLaNG88Ng",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Carlos\",\r\n  \"estado\": 1\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/usuarios/{{USER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{USER_ID}}"
+              ]
+            },
+            "description": "Este endpoint permite a un administrador actualizar la información de un usuario existente, como nombre, email, rol o estado. No se puede desactivar el propio usuario del administrador.\n\n**Método HTTP**\n\n- PUT\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/usuarios/{id}\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Content-Type: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**  \nEl cuerpo debe enviarse en formato JSON con los siguientes campos:\n\ntext\n\n```\n{\n  \"name\": \"Juan Pérez Actualizado\",\n  \"email\": \"juan.nuevo@universidad.edu\",\n  \"role_id\": 3,\n  \"estado\": 1\n}\n\n ```\n\n**Campos del Body:**\n\n- name (string, opcional): Nombre completo del usuario (máximo 100 caracteres)\n    \n- email (string, opcional): Nuevo correo electrónico único\n    \n- role_id (integer, opcional): Nuevo identificador de rol existente\n    \n- estado (integer, opcional): Nuevo estado (0 = inactivo, 1 = activo)\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación\n    \n- user (object): Información del usuario actualizado\n    \n    - id (integer): Identificador único del usuario\n        \n    - name (string): Nombre completo del usuario\n        \n    - email (string): Correo electrónico del usuario\n        \n    - role_id (integer): Identificador del rol\n        \n    - estado (integer): Estado del usuario\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Usuario actualizado correctamente\",\n  \"user\": {\n    \"id\": 1,\n    \"name\": \"Juan Pérez Actualizado\",\n    \"email\": \"juan.nuevo@universidad.edu\",\n    \"role_id\": 3,\n    \"estado\": 1\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Solo administradores pueden usar este endpoint; error 403 de lo contrario\n    \n- Si se intenta desactivar el propio usuario, error 422\n    \n- Para errores de validación (e.g., email duplicado), error 422"
+          },
+          "response": []
+        },
+        {
+          "name": "ELIMINAR USUARIO (SOFT)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzY0OTkwNDE4LCJleHAiOjE3NjQ5OTc2MTgsIm5iZiI6MTc2NDk5MDQxOCwianRpIjoiekxIdmFVVHRvamg1V055USIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.qNIN1uDbsDUUEQFaFWTQFoC9_fW3Alt3htHLaNG88Ng",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/usuarios/{{USER_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{USER_ID}}"
+              ]
+            },
+            "description": "# **Endpoint: Eliminar Usuario (Soft Delete)**\n\nEste endpoint permite a un administrador desactivar un usuario (cambiar estado a 0), en lugar de eliminarlo permanentemente. No se puede desactivar el propio usuario.\n\n**Método HTTP**\n\n- DELETE\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/usuarios/{id}\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación de desactivación\n    \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Usuario desactivado correctamente\"\n}\n\n ```\n\n**Notas Adicionales**\n\n- Solo administradores pueden acceder; error 403 de lo contrario\n    \n- Si se intenta desactivar el propio usuario, error 422\n    \n- Si el usuario no existe, error 404"
+          },
+          "response": []
+        },
+        {
+          "name": "EDITAR PERFIL USUARIO",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzY0OTkwNDE4LCJleHAiOjE3NjQ5OTc2MTgsIm5iZiI6MTc2NDk5MDQxOCwianRpIjoiekxIdmFVVHRvamg1V055USIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.qNIN1uDbsDUUEQFaFWTQFoC9_fW3Alt3htHLaNG88Ng",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Raw Trvn\",\r\n  \"email\": \"raw@uni.com\"\r\n}\r\n"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/perfil",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "perfil"
+              ]
+            },
+            "description": "### Endpoint: Editar Perfil Usuario\n\nEste endpoint permite al usuario autenticado actualizar su propio perfil, limitándose a nombre y correo electrónico.\n\n**Método HTTP**\n\n- PUT\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/perfil\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Content-Type: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**  \nEl cuerpo debe enviarse en formato JSON con los siguientes campos:\n\ntext\n\n```\n{\n  \"name\": \"Mi Nuevo Nombre\",\n  \"email\": \"mi.nuevo.email@universidad.edu\"\n}\n\n ```\n\n**Campos del Body:**\n\n- name (string): Nuevo nombre completo (máximo 100 caracteres)\n    \n- email (string): Nuevo correo electrónico único\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación\n    \n- user (object): Información del usuario actualizado\n    \n    - id (integer): Identificador único del usuario\n        \n    - name (string): Nombre completo del usuario\n        \n    - email (string): Correo electrónico del usuario\n        \n    - role_id (integer): Identificador del rol\n        \n    - estado (integer): Estado del usuario\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Perfil actualizado correctamente\",\n  \"user\": {\n    \"id\": 1,\n    \"name\": \"Mi Nuevo Nombre\",\n    \"email\": \"mi.nuevo.email@universidad.edu\",\n    \"role_id\": 2,\n    \"estado\": 1\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Solo se pueden actualizar name y email; otros campos generan error 422\n    \n- Requiere autenticación; error 401 si no se proporciona token"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "TIPO DE RECURSOS",
+      "item": [
+        {
+          "name": "CREAR TIPO RECURSO",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Laboratorio\",\r\n  \"descripcion\": \"Espacio para practicas experimentales\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/tipos-recursos",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "tipos-recursos"
+              ]
+            },
+            "description": "# CREAR TIPO RECURSO\n\n## Descripción\n\nEste endpoint permite crear un nuevo tipo de recurso en el sistema. Los tipos de recursos definen las categorías de espacios o elementos que pueden ser reservados (por ejemplo: salas de estudio, laboratorios, equipos, etc.).\n\n## Endpoint\n\n```\nPOST {{BASE_URL}}/api/tipos-recursos\n\n ```\n\n## Autenticación\n\nEste endpoint requiere autenticación mediante Bearer Token en el header Authorization.\n\n## Headers\n\n| Header | Valor | Descripción |\n| --- | --- | --- |\n| Accept | application/json | Formato de respuesta esperado |\n| Authorization | Bearer {{TOKEN_ADMIN}} | Token de autenticación del administrador |\n| Content-Type | application/json | Formato del cuerpo de la petición |\n\n## Body (JSON)\n\n``` json\n{\n  \"nombre\": \"string\",\n  \"descripcion\": \"string\"\n}\n\n ```\n\n### Parámetros del Body\n\n| Campo | Tipo | Requerido | Descripción |\n| --- | --- | --- | --- |\n| nombre | string | Sí | Nombre del tipo de recurso |\n| descripcion | string | Sí | Descripción detallada del tipo de recurso |\n\n## Ejemplo de Petición\n\n``` json\n{\n  \"nombre\": \"Sala de estudio\",\n  \"descripcion\": \"Sala mediana para grupos de 8 personas\"\n}\n\n ```\n\n## Respuestas\n\n### Éxito (201 Created)\n\n``` json\n{\n  \"message\": \"Tipo de recurso creado exitosamente\",\n  \"data\": {\n    \"id\": 1,\n    \"nombre\": \"Sala de estudio\",\n    \"descripcion\": \"Sala mediana para grupos de 8 personas\",\n    \"created_at\": \"2024-01-15T10:30:00.000000Z\",\n    \"updated_at\": \"2024-01-15T10:30:00.000000Z\"\n  }\n}\n\n ```\n\n### Error de Validación (422 Unprocessable Entity)\n\n``` json\n{\n  \"message\": \"Error de validación\",\n  \"errors\": {\n    \"nombre\": [\"El campo nombre es obligatorio\"],\n    \"descripcion\": [\"El campo descripción es obligatorio\"]\n  }\n}\n\n ```\n\n### Tipo de Recurso Duplicado (409 Conflict)\n\n``` json\n{\n  \"message\": \"El tipo de recurso ya existe\",\n  \"error\": \"Ya existe un tipo de recurso con ese nombre\"\n}\n\n ```\n\n### Error de Autenticación (401 Unauthorized)\n\n``` json\n{\n  \"message\": \"No autenticado\"\n}\n\n ```\n\n### Error de Autorización (403 Forbidden)\n\n``` json\n{\n  \"message\": \"No tienes permisos para realizar esta acción\"\n}\n\n ```\n\n### Error del Servidor (500 Internal Server Error)\n\n``` json\n{\n  \"message\": \"Error interno del servidor\",\n  \"error\": \"Descripción del error\"\n}\n\n ```\n\n## Estructura de Datos\n\n### Tipo de Recurso\n\n| Campo | Tipo | Descripción |\n| --- | --- | --- |\n| id | number | Identificador único del tipo de recurso |\n| nombre | string | Nombre del tipo de recurso |\n| descripcion | string | Descripción detallada del tipo de recurso |\n| created_at | string | Fecha y hora de creación (ISO 8601) |\n| updated_at | string | Fecha y hora de última actualización (ISO 8601) |\n\n## Notas\n\n- Solo usuarios con rol de administrador pueden crear tipos de recursos\n    \n- El nombre del tipo de recurso debe ser único en el sistema\n    \n- Los tipos de recursos creados pueden ser asignados posteriormente a recursos específicos\n    \n- Este endpoint es fundamental para la configuración inicial del sistema de reservas\n    \n- Se recomienda usar nombres descriptivos y claros para facilitar la gestión"
+          },
+          "response": []
+        },
+        {
+          "name": "LISTAR TIPO DE RECURSOS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/tipos-recursos",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "tipos-recursos"
+              ]
+            },
+            "description": "### Endpoint: Listar Tipos de Recursos\n\nEste endpoint obtiene la lista de todos los tipos de recursos activos.\n\n**Método HTTP**\n\n- GET\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/tipos-recursos\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- id (integer): Identificador único del tipo de recurso\n    \n- nombre (string): Nombre del tipo de recurso\n    \n- descripcion (string): Descripción del tipo de recurso\n    \n- estado (integer): Estado (1 = activo)\n    \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n[\n  {\n    \"id\": 1,\n    \"nombre\": \"Aula\",\n    \"descripcion\": \"Salas de clase para cursos\",\n    \"estado\": 1\n  }\n]\n\n ```\n\n**Notas Adicionales**\n\n- Accesible para cualquier usuario autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "LISTAR TIPO RECURSO {ID}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/tipos-recursos/{{TIPO_RECURSO_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "tipos-recursos",
+                "{{TIPO_RECURSO_ID}}"
+              ]
+            },
+            "description": "### Endpoint: Ver Tipo de Recurso\n\nEste endpoint obtiene los detalles de un tipo de recurso específico por ID.\n\n**Método HTTP**\n\n- GET\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/tipos-recursos/{id}\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- id (integer): Identificador único del tipo de recurso\n    \n- nombre (string): Nombre del tipo de recurso\n    \n- descripcion (string): Descripción del tipo de recurso\n    \n- estado (integer): Estado (1 = activo)\n    \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"id\": 1,\n  \"nombre\": \"Laboratorio\",\n  \"descripcion\": \"Laboratorios de computación\",\n  \"estado\": 1\n}\n\n ```\n\n**Notas Adicionales**\n\n- Si no existe o está eliminado, error 404\n    \n- Accesible para cualquier usuario autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "EDITAR TIPO RECURSO",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Sala de estudio A\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/tipos-recursos/{{TIPO_RECURSO_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "tipos-recursos",
+                "{{TIPO_RECURSO_ID}}"
+              ]
+            },
+            "description": "### Endpoint: Editar Tipo de Recurso\n\nEste endpoint permite a un administrador actualizar un tipo de recurso. Si tiene recursos asociados, solo se puede editar el nombre.\n\n**Método HTTP**\n\n- PUT\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/tipos-recursos/{id}\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Content-Type: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**  \nEl cuerpo debe enviarse en formato JSON con los siguientes campos:\n\ntext\n\n```\n{\n  \"nombre\": \"Aula Actualizada\",\n  \"descripcion\": \"Nueva descripción\",\n  \"estado\": 1\n}\n\n ```\n\n**Campos del Body:**\n\n- nombre (string, opcional): Nuevo nombre (máximo 50 caracteres)\n    \n- descripcion (string, opcional): Nueva descripción (máximo 255 caracteres)\n    \n- estado (integer, opcional): Nuevo estado (0 = inactivo, 1 = activo, 2 = eliminado)\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación\n    \n- tipo (object): Información del tipo de recurso actualizado\n    \n    - id (integer): Identificador único\n        \n    - nombre (string): Nombre\n        \n    - descripcion (string): Descripción\n        \n    - estado (integer): Estado\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Tipo de recurso actualizado correctamente\",\n  \"tipo\": {\n    \"id\": 1,\n    \"nombre\": \"Aula Actualizada\",\n    \"descripcion\": \"Nueva descripción\",\n    \"estado\": 1\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Solo administradores; error 403 de lo contrario\n    \n- Si tiene recursos asociados, campos limitados; error 422 si se intenta editar más\n    \n- Si no existe, error 404"
+          },
+          "response": []
+        },
+        {
+          "name": "ELIMINAR TIPO RECURSO",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/tipos-recursos/{{TIPO_RECURSO_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "tipos-recursos",
+                "{{TIPO_RECURSO_ID}}"
+              ]
+            },
+            "description": "### Endpoint: Eliminar Tipo de Recurso\n\nEste endpoint permite a un administrador eliminar lógicamente un tipo de recurso (estado a 2), solo si no tiene recursos asociados.\n\n**Método HTTP**\n\n- DELETE\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/tipos-recursos/{id}\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación de eliminación\n    \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Tipo de recurso eliminado correctamente\"\n}\n\n ```\n\n**Notas Adicionales**\n\n- Solo administradores; error 403 de lo contrario\n    \n- Si tiene recursos asociados, error 422\n    \n- Si no existe, error 404"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "RECURSOS",
+      "item": [
+        {
+          "name": "CREAR RECURSO",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"tipo_recurso_id\": 3,\r\n  \"nombre\": \"Laboratorio de Fisica \",\r\n  \"descripcion\": \"Para practicas de Fisica Electrica\",\r\n  \"ubicacion\": \"Edificio X, planta baja\",\r\n  \"capacidad\": 20,\r\n  \"disponibilidad_general\": true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/recursos",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "recursos"
+              ]
+            },
+            "description": "### Endpoint: Crear Recurso\n\nEste endpoint permite a un administrador crear un nuevo recurso, como un aula o equipo, asociándolo a un tipo de recurso existente.\n\n**Método HTTP**\n\n- POST\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/recursos\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Content-Type: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**  \nEl cuerpo debe enviarse en formato JSON con los siguientes campos:\n\ntext\n\n```\n{\n  \"tipo_recurso_id\": 1,\n  \"nombre\": \"Aula Magna\",\n  \"descripcion\": \"Auditorio principal con capacidad para 200 personas\",\n  \"ubicacion\": \"Edificio Principal, Tercer Piso\",\n  \"capacidad\": 200,\n  \"disponibilidad_general\": true\n}\n\n ```\n\n**Campos del Body:**\n\n- tipo_recurso_id (integer): ID del tipo de recurso existente\n    \n- nombre (string): Nombre del recurso (máximo 100 caracteres)\n    \n- descripcion (string, opcional): Descripción detallada\n    \n- ubicacion (string, opcional): Ubicación (máximo 150 caracteres)\n    \n- capacidad (integer, opcional): Capacidad máxima (mínimo 1)\n    \n- disponibilidad_general (boolean, opcional): Disponibilidad general (por defecto true)\n    \n\n**Respuesta ExitosaCódigo de Estado:** 201 Created\n\n**Descripción de Campos:**\n\n- id (integer): Identificador único del recurso\n    \n- tipo_recurso_id (integer): ID del tipo de recurso\n    \n- nombre (string): Nombre del recurso\n    \n- descripcion (string): Descripción\n    \n- ubicacion (string): Ubicación\n    \n- capacidad (integer): Capacidad\n    \n- disponibilidad_general (boolean): Disponibilidad\n    \n- estado (integer): Estado inicial (1 = activo)\n    \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"id\": 10,\n  \"tipo_recurso_id\": 1,\n  \"nombre\": \"Aula Magna\",\n  \"descripcion\": \"Auditorio principal con capacidad para 200 personas\",\n  \"ubicacion\": \"Edificio Principal, Tercer Piso\",\n  \"capacidad\": 200,\n  \"disponibilidad_general\": true,\n  \"estado\": 1\n}\n\n ```\n\n**Notas Adicionales**\n\n- Solo administradores; error 403 de lo contrario\n    \n- Si tipo_recurso_id no existe, error 422"
+          },
+          "response": []
+        },
+        {
+          "name": "LISTAR RECURSOS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/recursos",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "recursos"
+              ]
+            },
+            "description": "### Endpoint: Listar Recursos\n\nEste endpoint obtiene la lista de recursos activos, con filtros opcionales por tipo y disponibilidad.\n\n**Método HTTP**\n\n- GET\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/recursos\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- tipo_recurso_id (integer, opcional): Filtrar por ID del tipo de recurso\n    \n- disponible (boolean, opcional): Filtrar por disponibilidad (0 = no, 1 = sí)\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- id (integer): Identificador único del recurso\n    \n- tipo_recurso_id (integer): ID del tipo de recurso\n    \n- nombre (string): Nombre del recurso\n    \n- descripcion (string): Descripción\n    \n- ubicacion (string): Ubicación\n    \n- capacidad (integer): Capacidad\n    \n- disponibilidad_general (boolean): Disponibilidad\n    \n- estado (integer): Estado (1 = activo)\n    \n- tipo_recurso (object): Información del tipo\n    \n    - id (integer): ID del tipo\n        \n    - nombre (string): Nombre del tipo\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n[\n  {\n    \"id\": 1,\n    \"tipo_recurso_id\": 1,\n    \"nombre\": \"Aula 101\",\n    \"descripcion\": \"Aula con capacidad para 30 personas\",\n    \"ubicacion\": \"Edificio A, Primer Piso\",\n    \"capacidad\": 30,\n    \"disponibilidad_general\": true,\n    \"estado\": 1,\n    \"tipo_recurso\": {\n      \"id\": 1,\n      \"nombre\": \"Aula\"\n    }\n  }\n]\n\n ```\n\n**Notas Adicionales**\n\n- Accesible para cualquier usuario autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "LISTAR RECURSO {ID}",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/recursos/{{RECURSO_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "recursos",
+                "{{RECURSO_ID}}"
+              ]
+            },
+            "description": "### Endpoint: Ver Recurso\n\nEste endpoint obtiene los detalles de un recurso específico por ID.\n\n**Método HTTP**\n\n- GET\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/recursos/{id}\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- id (integer): Identificador único del recurso\n    \n- tipo_recurso_id (integer): ID del tipo de recurso\n    \n- nombre (string): Nombre del recurso\n    \n- descripcion (string): Descripción\n    \n- ubicacion (string): Ubicación\n    \n- capacidad (integer): Capacidad\n    \n- disponibilidad_general (boolean): Disponibilidad\n    \n- estado (integer): Estado (1 = activo)\n    \n- tipo_recurso (object): Información del tipo\n    \n    - id (integer): ID del tipo\n        \n    - nombre (string): Nombre del tipo\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"id\": 1,\n  \"tipo_recurso_id\": 1,\n  \"nombre\": \"Laboratorio de Computación 1\",\n  \"descripcion\": \"Laboratorio con 25 computadoras\",\n  \"ubicacion\": \"Edificio B, Segundo Piso\",\n  \"capacidad\": 25,\n  \"disponibilidad_general\": true,\n  \"estado\": 1,\n  \"tipo_recurso\": {\n    \"id\": 1,\n    \"nombre\": \"Laboratorio\"\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Si no existe o está eliminado, error 404\n    \n- Accesible para cualquier usuario autenticado"
+          },
+          "response": []
+        },
+        {
+          "name": "EDITAR RECURSO",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nombre\": \"Sala 101\",\r\n  \"descripcion\": \"Sala de estudio con TV y pizarra\",\r\n  \"ubicacion\": \"Edificio A, piso 3\",\r\n  \"capacidad\": 8\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/recursos/{{RECURSO_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "recursos",
+                "{{RECURSO_ID}}"
+              ]
+            },
+            "description": "### Endpoint: Editar Recurso\n\nEste endpoint permite a un administrador actualizar un recurso. Si tiene reservas activas, solo se pueden editar nombre, descripción y ubicación.\n\n**Método HTTP**\n\n- PUT\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/recursos/{id}\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Content-Type: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**  \nEl cuerpo debe enviarse en formato JSON con los siguientes campos:\n\ntext\n\n```\n{\n  \"tipo_recurso_id\": 2,\n  \"nombre\": \"Aula 101 - Renovada\",\n  \"descripcion\": \"Aula renovada con proyector y aire acondicionado\",\n  \"ubicacion\": \"Edificio A, Primer Piso, Ala Norte\",\n  \"capacidad\": 35,\n  \"disponibilidad_general\": true,\n  \"estado\": 1\n}\n\n ```\n\n**Campos del Body:**\n\n- tipo_recurso_id (integer, opcional): Nuevo ID del tipo (solo si no hay reservas)\n    \n- nombre (string, opcional): Nuevo nombre (máximo 100 caracteres)\n    \n- descripcion (string, opcional): Nueva descripción\n    \n- ubicacion (string, opcional): Nueva ubicación (máximo 150 caracteres)\n    \n- capacidad (integer, opcional): Nueva capacidad (mínimo 1, solo si no hay reservas)\n    \n- disponibilidad_general (boolean, opcional): Nueva disponibilidad (solo si no hay reservas)\n    \n- estado (integer, opcional): Nuevo estado (0,1,2, solo si no hay reservas)\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación\n    \n- recurso (object): Información del recurso actualizado\n    \n    - id (integer): Identificador único\n        \n    - tipo_recurso_id (integer): ID del tipo\n        \n    - nombre (string): Nombre\n        \n    - descripcion (string): Descripción\n        \n    - ubicacion (string): Ubicación\n        \n    - capacidad (integer): Capacidad\n        \n    - disponibilidad_general (boolean): Disponibilidad\n        \n    - estado (integer): Estado\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Recurso actualizado correctamente\",\n  \"recurso\": {\n    \"id\": 1,\n    \"tipo_recurso_id\": 2,\n    \"nombre\": \"Aula 101 - Renovada\",\n    \"descripcion\": \"Aula renovada con proyector y aire acondicionado\",\n    \"ubicacion\": \"Edificio A, Primer Piso, Ala Norte\",\n    \"capacidad\": 35,\n    \"disponibilidad_general\": true,\n    \"estado\": 1\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Solo administradores; error 403 de lo contrario\n    \n- Campos limitados si hay reservas; error 422 si se intenta editar más\n    \n- Si no existe, error 404"
+          },
+          "response": []
+        },
+        {
+          "name": "ELIMINAR RECURSO",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/recursos/{{RECURSO_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "recursos",
+                "{{RECURSO_ID}}"
+              ]
+            },
+            "description": "### Endpoint: Eliminar Recurso\n\nEste endpoint permite a un administrador eliminar lógicamente un recurso (estado a 2), solo si no tiene reservas activas.\n\n**Método HTTP**\n\n- DELETE\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/recursos/{id}\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación de eliminación\n    \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Recurso eliminado correctamente\"\n}\n\n ```\n\n**Notas Adicionales**\n\n- Solo administradores; error 403 de lo contrario\n    \n- Si tiene reservas activas, error 422\n    \n- Si no existe, error 404"
+          },
+          "response": []
+        },
+        {
+          "name": "VERIFICAR DISPONIBILIDAD RECURSO",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/recursos/{{RECURSO_ID}}/disponibilidad?fecha_inicio=2026-02-01 08:00:00&fecha_fin=2026-02-04 10:00:00",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "recursos",
+                "{{RECURSO_ID}}",
+                "disponibilidad"
+              ],
+              "query": [
+                {
+                  "key": "fecha_inicio",
+                  "value": "2026-02-01 08:00:00",
+                  "description": "Fecha y hora de inicio (Y-m-d H:i:s)"
+                },
+                {
+                  "key": "fecha_fin",
+                  "value": "2026-02-04 10:00:00",
+                  "description": "Fecha y hora de fin (Y-m-d H:i:s)"
+                }
+              ]
+            },
+            "description": "Verifica si un recurso está disponible en un rango de fechas específico. Retorna la disponibilidad y las reservas existentes en ese periodo."
+          },
+          "response": []
+        },
+        {
+          "name": "RECURSOS DISPONIBLES POR TIPO",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/recursos/tipo/{{TIPO_RECURSO_ID}}/disponibles?fecha_inicio=2025-12-10 08:00:00&fecha_fin=2025-12-10 10:00:00",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "recursos",
+                "tipo",
+                "{{TIPO_RECURSO_ID}}",
+                "disponibles"
+              ],
+              "query": [
+                {
+                  "key": "fecha_inicio",
+                  "value": "2025-12-10 08:00:00",
+                  "description": "Fecha y hora de inicio (opcional)"
+                },
+                {
+                  "key": "fecha_fin",
+                  "value": "2025-12-10 10:00:00",
+                  "description": "Fecha y hora de fin (opcional)"
+                }
+              ]
+            },
+            "description": "Obtiene todos los recursos de un tipo específico que están disponibles. Opcionalmente filtra por rango de fechas."
+          },
+          "response": []
+        },
+        {
+          "name": "BÚSQUEDA AVANZADA DE RECURSOS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/recursos/busqueda-avanzada?ubicacion=Edificio A",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "recursos",
+                "busqueda-avanzada"
+              ],
+              "query": [
+                {
+                  "key": "tipo_recurso_id",
+                  "value": "1",
+                  "description": "ID del tipo de recurso (opcional)",
+                  "disabled": true
+                },
+                {
+                  "key": "capacidad_min",
+                  "value": "30",
+                  "description": "Capacidad mínima requerida (opcional)",
+                  "disabled": true
+                },
+                {
+                  "key": "ubicacion",
+                  "value": "Edificio A",
+                  "description": "Búsqueda parcial en ubicación (opcional)"
+                },
+                {
+                  "key": "nombre",
+                  "value": "Aula",
+                  "description": "Búsqueda parcial en nombre (opcional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Búsqueda avanzada de recursos por múltiples criterios: tipo, capacidad, ubicación y nombre."
+          },
+          "response": []
+        },
+        {
+          "name": "RECURSOS MÁS UTILIZADOS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/recursos/reportes/mas-utilizados",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "recursos",
+                "reportes",
+                "mas-utilizados"
+              ],
+              "query": [
+                {
+                  "key": "limite",
+                  "value": "10",
+                  "description": "Número de recursos a retornar (default: 10)",
+                  "disabled": true
+                },
+                {
+                  "key": "fecha_desde",
+                  "value": "2024-01-01",
+                  "description": "Fecha de inicio del periodo (opcional)",
+                  "disabled": true
+                },
+                {
+                  "key": "fecha_hasta",
+                  "value": "2024-12-31",
+                  "description": "Fecha de fin del periodo (opcional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Reporte de recursos más utilizados ordenados por número de reservas."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "RESERVAS",
+      "item": [
+        {
+          "name": "CREAR RESERVA",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"recurso_id\": 1,\r\n  \"fecha_inicio\": \"2026-02-04 08:00:00\",\r\n  \"fecha_fin\": \"2026-02-04 10:00:00\",\r\n  \"comentarios\": \"Reserva para preparacion para examen\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/reservas",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reservas"
+              ]
+            },
+            "description": "### Endpoint: Crear Reserva\n\nEste endpoint permite crear una nueva reserva para un recurso, validando disponibilidad y sin traslapes. Envía notificaciones.\n\n**Método HTTP**\n\n- POST\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/reservas\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Content-Type: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**  \nEl cuerpo debe enviarse en formato JSON con los siguientes campos:\n\ntext\n\n```\n{\n  \"recurso_id\": 3,\n  \"fecha_inicio\": \"2025-12-10 08:00:00\",\n  \"fecha_fin\": \"2025-12-10 10:00:00\",\n  \"comentarios\": \"Reserva para clase de programación\"\n}\n\n ```\n\n**Campos del Body:**\n\n- recurso_id (integer): ID del recurso a reservar\n    \n- fecha_inicio (string): Fecha y hora de inicio (formato Y-m-d H:i:s, posterior a ahora)\n    \n- fecha_fin (string): Fecha y hora de fin (posterior a fecha_inicio)\n    \n- comentarios (string, opcional): Comentarios (máximo 500 caracteres)\n    \n\n**Respuesta ExitosaCódigo de Estado:** 201 Created\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación\n    \n- reserva (object): Información de la reserva creada\n    \n    - id (integer): Identificador único\n        \n    - user_id (integer): ID del usuario\n        \n    - recurso_id (integer): ID del recurso\n        \n    - fecha_inicio (string): Fecha de inicio\n        \n    - fecha_fin (string): Fecha de fin\n        \n    - estado (string): Estado (\"activa\")\n        \n    - comentarios (string): Comentarios\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Reserva creada correctamente\",\n  \"reserva\": {\n    \"id\": 15,\n    \"user_id\": 5,\n    \"recurso_id\": 3,\n    \"fecha_inicio\": \"2025-12-10 08:00:00\",\n    \"fecha_fin\": \"2025-12-10 10:00:00\",\n    \"estado\": \"activa\",\n    \"comentarios\": \"Reserva para clase de programación\"\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Accesible para usuarios autenticados\n    \n- Si hay traslape o recurso no disponible, error 422\n    \n- Envía notificaciones al usuario y admins"
+          },
+          "response": []
+        },
+        {
+          "name": "VER RESERVAS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reservas",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reservas"
+              ]
+            },
+            "description": "### Endpoint: Listar Reservas\n\nEste endpoint obtiene la lista de reservas. Administradores ven todas con filtros; usuarios ven solo las suyas.\n\n**Método HTTP**\n\n- GET\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/reservas\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- estado (string, opcional, solo admin): Filtrar por \"activa\" o \"cancelada\"\n    \n- user_id (integer, opcional, solo admin): Filtrar por ID de usuario\n    \n- recurso_id (integer, opcional, solo admin): Filtrar por ID de recurso\n    \n- desde (string, opcional, solo admin): Filtrar desde fecha (Y-m-d H:i:s)\n    \n- hasta (string, opcional, solo admin): Filtrar hasta fecha (Y-m-d H:i:s)\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- id (integer): Identificador único de la reserva\n    \n- user_id (integer): ID del usuario\n    \n- recurso_id (integer): ID del recurso\n    \n- fecha_inicio (string): Fecha de inicio\n    \n- fecha_fin (string): Fecha de fin\n    \n- estado (string): Estado (\"activa\" o \"cancelada\")\n    \n- comentarios (string): Comentarios\n    \n- user (object): Información del usuario\n    \n    - id (integer): ID del usuario\n        \n    - name (string): Nombre del usuario\n        \n- recurso (object): Información del recurso\n    \n    - id (integer): ID del recurso\n        \n    - nombre (string): Nombre del recurso\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n[\n  {\n    \"id\": 1,\n    \"user_id\": 5,\n    \"recurso_id\": 3,\n    \"fecha_inicio\": \"2025-12-10 08:00:00\",\n    \"fecha_fin\": \"2025-12-10 10:00:00\",\n    \"estado\": \"activa\",\n    \"comentarios\": \"Reserva para clase de programación\",\n    \"user\": {\n      \"id\": 5,\n      \"name\": \"Juan Pérez\"\n    },\n    \"recurso\": {\n      \"id\": 3,\n      \"nombre\": \"Aula 101\"\n    }\n  }\n]\n\n ```\n\n**Notas Adicionales**\n\n- Filtros solo para admins\n    \n- Ordenado por fecha_inicio descendente"
+          },
+          "response": []
+        },
+        {
+          "name": "FILTROS EN RESERVAS",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reservas?desde=2025-12-01 00:00:00&hasta=2025-12-31 23:59:59",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reservas"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "activa",
+                  "disabled": true
+                },
+                {
+                  "key": "user_id",
+                  "value": "3",
+                  "disabled": true
+                },
+                {
+                  "key": "recurso_id",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "desde",
+                  "value": "2025-12-01 00:00:00"
+                },
+                {
+                  "key": "hasta",
+                  "value": "2025-12-31 23:59:59"
+                }
+              ]
+            },
+            "description": "### Endpoint: Ver Reserva\n\nEste endpoint obtiene los detalles de una reserva específica. Usuarios ven solo las suyas; admins todas.\n\n**Método HTTP**\n\n- GET\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/reservas/{id}\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- id (integer): Identificador único de la reserva\n    \n- user_id (integer): ID del usuario\n    \n- recurso_id (integer): ID del recurso\n    \n- fecha_inicio (string): Fecha de inicio\n    \n- fecha_fin (string): Fecha de fin\n    \n- estado (string): Estado (\"activa\" o \"cancelada\")\n    \n- comentarios (string): Comentarios\n    \n- user (object): Información del usuario\n    \n    - id (integer): ID del usuario\n        \n    - name (string): Nombre del usuario\n        \n- recurso (object): Información del recurso\n    \n    - id (integer): ID del recurso\n        \n    - nombre (string): Nombre del recurso\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"id\": 1,\n  \"user_id\": 5,\n  \"recurso_id\": 3,\n  \"fecha_inicio\": \"2025-12-10 08:00:00\",\n  \"fecha_fin\": \"2025-12-10 10:00:00\",\n  \"estado\": \"activa\",\n  \"comentarios\": \"Reserva para clase de programación\",\n  \"user\": {\n    \"id\": 5,\n    \"name\": \"Juan Pérez\"\n  },\n  \"recurso\": {\n    \"id\": 3,\n    \"nombre\": \"Aula 101\"\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Error 403 si usuario no autorizado para ver\n    \n- Error 404 si no existe"
+          },
+          "response": []
+        },
+        {
+          "name": "MODIFICAR RESERVA",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"fecha_inicio\": \"2025-12-20 10:00:00\",\r\n  \"fecha_fin\": \"2025-12-20 13:00:00\",\r\n  \"comentarios\": \"Reserva para estudiar para examen parcial\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/reservas/{{RESERVA_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reservas",
+                "{{RESERVA_ID}}"
+              ]
+            },
+            "description": "### Endpoint: Modificar Reserva\n\nEste endpoint permite actualizar una reserva. Admins editan más campos; usuarios solo fechas y comentarios de las suyas activas.\n\n**Método HTTP**\n\n- PUT\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/reservas/{id}\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Content-Type: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**  \nEl cuerpo debe enviarse en formato JSON con los siguientes campos:\n\ntext\n\n```\n{\n  \"recurso_id\": 4,\n  \"fecha_inicio\": \"2025-12-10 09:00:00\",\n  \"fecha_fin\": \"2025-12-10 11:00:00\",\n  \"estado\": \"activa\",\n  \"comentarios\": \"Comentarios actualizados\"\n}\n\n ```\n\n**Campos del Body:**\n\n- recurso_id (integer, opcional, solo admin): Nuevo ID del recurso\n    \n- fecha_inicio (string, opcional): Nueva fecha de inicio (Y-m-d H:i:s)\n    \n- fecha_fin (string, opcional): Nueva fecha de fin (posterior a inicio)\n    \n- estado (string, opcional, solo admin): Nuevo estado (\"activa\" o \"cancelada\")\n    \n- comentarios (string, opcional): Nuevos comentarios (máximo 500)\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación\n    \n- reserva (object): Información de la reserva actualizada\n    \n    - id (integer): Identificador único\n        \n    - user_id (integer): ID del usuario\n        \n    - recurso_id (integer): ID del recurso\n        \n    - fecha_inicio (string): Fecha de inicio\n        \n    - fecha_fin (string): Fecha de fin\n        \n    - estado (string): Estado\n        \n    - comentarios (string): Comentarios\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Reserva actualizada correctamente\",\n  \"reserva\": {\n    \"id\": 15,\n    \"user_id\": 5,\n    \"recurso_id\": 4,\n    \"fecha_inicio\": \"2025-12-10 09:00:00\",\n    \"fecha_fin\": \"2025-12-10 11:00:00\",\n    \"estado\": \"activa\",\n    \"comentarios\": \"Comentarios actualizados\"\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Error 403 si no autorizado\n    \n- Valida traslapes y disponibilidad; error 422 si falla\n    \n- Envía notificaciones si cambia"
+          },
+          "response": []
+        },
+        {
+          "name": "CANCELAR RESERVA",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reservas/{{RESERVA_ID}}/cancelar",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reservas",
+                "{{RESERVA_ID}}",
+                "cancelar"
+              ]
+            },
+            "description": "### Endpoint: Cancelar Reserva\n\nEste endpoint cambia el estado de una reserva a \"cancelada\". Usuarios cancelan las suyas; admins cualquier.\n\n**Método HTTP**\n\n- PUT\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/reservas/{id}/cancelar\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación\n    \n- reserva (object): Información de la reserva cancelada\n    \n    - id (integer): Identificador único\n        \n    - user_id (integer): ID del usuario\n        \n    - recurso_id (integer): ID del recurso\n        \n    - fecha_inicio (string): Fecha de inicio\n        \n    - fecha_fin (string): Fecha de fin\n        \n    - estado (string): Estado (\"cancelada\")\n        \n    - comentarios (string): Comentarios\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Reserva cancelada correctamente\",\n  \"reserva\": {\n    \"id\": 15,\n    \"user_id\": 5,\n    \"recurso_id\": 3,\n    \"fecha_inicio\": \"2025-12-10 08:00:00\",\n    \"fecha_fin\": \"2025-12-10 10:00:00\",\n    \"estado\": \"cancelada\",\n    \"comentarios\": \"Reserva para clase de programación\"\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Error 403 si no autorizado\n    \n- Si ya cancelada, error 422\n    \n- Envía notificaciones y registra historial"
+          },
+          "response": []
+        },
+        {
+          "name": "VERIFICAR CONFLICTOS DE RESERVA",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recurso_id\": 1,\n  \"fecha_inicio\": \"2025-12-21 09:00:00\",\n  \"fecha_fin\": \"2025-12-21 12:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/reservas/verificar-conflictos",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reservas",
+                "verificar-conflictos"
+              ]
+            },
+            "description": "Verifica si hay conflictos de reserva para un recurso en un rango de fechas específico. Permite excluir una reserva de la verificación."
+          },
+          "response": []
+        },
+        {
+          "name": "RESERVAS POR USUARIO",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reservas/reportes/por-usuario/{{USER_ID}}?estado=finalizada",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reservas",
+                "reportes",
+                "por-usuario",
+                "{{USER_ID}}"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "finalizada",
+                  "description": "Filtrar por estado: activa o cancelada (opcional)"
+                },
+                {
+                  "key": "fecha_desde",
+                  "value": "2025-01-01",
+                  "description": "Fecha de inicio del periodo (opcional)",
+                  "disabled": true
+                },
+                {
+                  "key": "fecha_hasta",
+                  "value": "2025-12-31",
+                  "description": "Fecha de fin del periodo (opcional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Obtiene un reporte completo de las reservas de un usuario específico con estadísticas."
+          },
+          "response": []
+        },
+        {
+          "name": "ESTADÍSTICAS DE USO DEL SISTEMA",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reservas/reportes/estadisticas?fecha_desde=2024-01-01&fecha_hasta=2024-12-31",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reservas",
+                "reportes",
+                "estadisticas"
+              ],
+              "query": [
+                {
+                  "key": "fecha_desde",
+                  "value": "2024-01-01",
+                  "description": "Fecha de inicio del periodo (opcional)"
+                },
+                {
+                  "key": "fecha_hasta",
+                  "value": "2024-12-31",
+                  "description": "Fecha de fin del periodo (opcional)"
+                }
+              ]
+            },
+            "description": "Obtiene estadísticas generales del sistema de reservas incluyendo totales, promedios, top usuarios y distribución por tipo de recurso.\n\nStartFragment{    \"periodo\": {        \"desde\": \"2025-12-21\",        \"hasta\": \"2025-12-23\"    },    \"totales\": {        \"total_reservas\": 2,        \"reservas_activas\": 2,        \"reservas_canceladas\": 0    },    \"promedios\": {        \"reservas_por_usuario\": 0.67,        \"reservas_por_recurso\": 0.67    },    \"top_usuarios\": \\[        {            \"usuario\": \"humberto alvarado\",            \"total_reservas\": 3        },        {            \"usuario\": \"Administrador\",            \"total_reservas\": 3        }    \\],    \"reservas_por_tipo_recurso\": \\[        {            \"tipo\": \"Sala de estudio\",            \"total_reservas\": 4        },        {            \"tipo\": \"Sala de estudio B\",            \"total_reservas\": 2        }    \\]}EndFragment"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "NOTIFICACIONES",
+      "item": [
+        {
+          "name": "LISTAR NO LEIDAS",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/notificaciones",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "notificaciones"
+              ],
+              "query": [
+                {
+                  "key": "solo_no_leidas",
+                  "value": "false",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "### Endpoint: Listar Notificaciones\n\nEste endpoint obtiene la lista de notificaciones del usuario autenticado, con opción de filtrar solo no leídas.\n\n**Método HTTP**\n\n- GET\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/notificaciones\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- solo_no_leidas (boolean, opcional): Filtrar solo no leídas (true)\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- id (integer): Identificador único de la notificación\n    \n- user_id (integer): ID del usuario\n    \n- tipo (string): Tipo de notificación (e.g., \"reserva_creada\")\n    \n- titulo (string): Título de la notificación\n    \n- mensaje (string): Mensaje detallado\n    \n- leida (boolean): Si ha sido leída\n    \n- created_at (string): Fecha de creación (ISO 8601)\n    \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n[\n  {\n    \"id\": 1,\n    \"user_id\": 5,\n    \"tipo\": \"reserva_creada\",\n    \"titulo\": \"Reserva creada correctamente\",\n    \"mensaje\": \"Has reservado el recurso Aula 101 del 2025-12-10 08:00:00 al 2025-12-10 10:00:00.\",\n    \"leida\": false,\n    \"created_at\": \"2025-12-07T10:30:00.000000Z\"\n  }\n]\n\n ```\n\n**Notas Adicionales**\n\n- Ordenado por created_at descendente\n    \n- Solo notificaciones del usuario actual"
+          },
+          "response": []
+        },
+        {
+          "name": "MARCAR COMO LEIDA {ID}",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/notificaciones/{{NOTIFICACION_ID}}/leer",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "notificaciones",
+                "{{NOTIFICACION_ID}}",
+                "leer"
+              ]
+            },
+            "description": "### Endpoint: Marcar Notificación Como Leída\n\nEste endpoint marca una notificación específica como leída, solo si pertenece al usuario autenticado.\n\n**Método HTTP**\n\n- PUT\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/notificaciones/{id}/leer\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación\n    \n- notificacion (object): Información de la notificación\n    \n    - id (integer): Identificador único\n        \n    - user_id (integer): ID del usuario\n        \n    - tipo (string): Tipo\n        \n    - titulo (string): Título\n        \n    - mensaje (string): Mensaje\n        \n    - leida (boolean): Ahora true\n        \n    - created_at (string): Fecha de creación\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Notificación marcada como leída\",\n  \"notificacion\": {\n    \"id\": 1,\n    \"user_id\": 5,\n    \"tipo\": \"reserva_creada\",\n    \"titulo\": \"Reserva creada correctamente\",\n    \"mensaje\": \"Has reservado el recurso Aula 101.\",\n    \"leida\": true,\n    \"created_at\": \"2025-12-07T10:30:00.000000Z\"\n  }\n}\n\n ```\n\n**Notas Adicionales**\n\n- Si no existe o no pertenece al usuario, error 404"
+          },
+          "response": []
+        },
+        {
+          "name": "MARCAR TODAS COMO LEIDAS",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/notificaciones/marcar-todas-leidas",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "notificaciones",
+                "marcar-todas-leidas"
+              ]
+            },
+            "description": "### Endpoint: Marcar Todas las Notificaciones Como Leídas\n\nEste endpoint marca todas las notificaciones no leídas del usuario autenticado como leídas.\n\n**Método HTTP**\n\n- PUT\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/notificaciones/marcar-todas-leidas\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación\n    \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"Todas las notificaciones han sido marcadas como leídas\"\n}\n\n ```\n\n**Notas Adicionales**\n\n- Solo afecta notificaciones del usuario actual"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "HISTORIAL",
+      "item": [
+        {
+          "name": "VER HISTORIAL DE RESERVA",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/reservas/{{RESERVA_ID}}/historial",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "reservas",
+                "{{RESERVA_ID}}",
+                "historial"
+              ]
+            },
+            "description": "### Endpoint: Ver Historial de Reserva\n\nEste endpoint obtiene el historial de cambios de una reserva específica, ordenado cronológicamente. Usuarios ven solo de las suyas.\n\n**Método HTTP**\n\n- GET\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/api/reservas/{id}/historial\n\n ```\n\n**Headers Requeridos**\n\n- Accept: application/json\n    \n- Authorization: Bearer {access_token}\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- id (integer): Identificador único del registro de historial\n    \n- reserva_id (integer): ID de la reserva\n    \n- user_id (integer): ID del usuario que realizó la acción\n    \n- accion (string): Tipo de acción (e.g., \"creada\", \"actualizada_admin\")\n    \n- detalle (string): Detalle de la acción\n    \n- created_at (string): Fecha de la acción (ISO 8601)\n    \n- user (object): Información del usuario\n    \n    - id (integer): ID del usuario\n        \n    - name (string): Nombre\n        \n    - email (string): Correo\n        \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n[\n  {\n    \"id\": 1,\n    \"reserva_id\": 15,\n    \"user_id\": 5,\n    \"accion\": \"creada\",\n    \"detalle\": \"Reserva creada para el recurso Aula 101 del 2025-12-10 08:00:00 al 2025-12-10 10:00:00.\",\n    \"created_at\": \"2025-12-07T10:30:00.000000Z\",\n    \"user\": {\n      \"id\": 5,\n      \"name\": \"Juan Pérez\",\n      \"email\": \"juan@universidad.edu\"\n    }\n  }\n]\n\n ```\n\n**Notas Adicionales**\n\n- Error 403 si no autorizado para ver\n    \n- Error 404 si reserva no existe\n    \n- Ordenado por created_at ascendente"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ROLES",
+      "item": [
+        {
+          "name": "LISTAR ROLES",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzY0OTkwNDE4LCJleHAiOjE3NjQ5OTc2MTgsIm5iZiI6MTc2NDk5MDQxOCwianRpIjoiekxIdmFVVHRvamg1V055USIsInN1YiI6IjIiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.qNIN1uDbsDUUEQFaFWTQFoC9_fW3Alt3htHLaNG88Ng",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/roles",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PRUEBA DE CONEXION (GET)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8000/api/ping",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "ping"
+          ]
+        },
+        "description": "### Endpoint: Prueba de Conexión (Ping)\n\nEste endpoint sirve como prueba para verificar que la API está funcionando correctamente.\n\n**Método HTTP**\n\n- GET\n    \n\n**URL**\n\ntext\n\n```\n{{BASE_URL}}/ping\n\n ```\n\n**Headers Requeridos**\n\n- Ninguno\n    \n\n**Parámetros de Consulta**\n\n- Ninguno\n    \n\n**Cuerpo de la Petición (Body)**\n\n- Ninguno\n    \n\n**Respuesta ExitosaCódigo de Estado:** 200 OK\n\n**Descripción de Campos:**\n\n- message (string): Mensaje de confirmación de la API\n    \n\n**Ejemplo de Respuesta:**\n\ntext\n\n```\n{\n  \"message\": \"API Reservas OK\"\n}\n\n ```\n\n**Notas Adicionales**\n\n- No requiere autenticación\n    \n- Útil para pruebas de conectividad"
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{TOKEN_ADMIN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "TOKEN_ADMIN",
+      "value": ""
+    },
+    {
+      "key": "USER_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "TIPO_RECURSO_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "RECURSO_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "RESERVA_ID",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "key": "BASE_URL",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

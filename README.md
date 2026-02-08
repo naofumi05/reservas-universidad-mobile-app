@@ -1,50 +1,74 @@
-# Welcome to your Expo app 👋
+# 🎓 Universidad Mobile App - Sistema de Reservas
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+![Expo](https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white)
+![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
 
-## Get started
+Una aplicación móvil moderna y "Premium" diseñada para la gestión de reservas de recursos universitarios (aulas, laboratorios, bibliotecas). Esta app se integra con un backend Laravel para ofrecer una experiencia fluida tanto a estudiantes como a administradores.
 
-1. Install dependencies
+## ✨ Características Principales
 
-   ```bash
-   npm install
-   ```
+- **Diseño Premium:** Estética institucional en verde esmeralda con gradientes, sombras suaves y micro-animaciones.
+- **Dashboard Dual:**
+  - **Administrador:** Vista global con estadísticas, gestión de usuarios y recursos.
+  - **Estudiante/Usuario:** Vista personalizada con próximas reservas y acceso rápido.
+- **Gestión Inteligente:** Sistema de búsqueda con filtros avanzados (capacidad, ubicación, tipo).
+- **Control de Acceso:** Manejo de roles (Admin/User) y seguridad mediante JWT.
+- **Reportes Visuales:** Pantalla de estadísticas con gráficos estilizados y análisis de uso.
 
-2. Start the app
+## 🚀 Instalación y Configuración
 
-   ```bash
-   npx expo start
-   ```
+### 1. Requisitos Previos
 
-In the output, you'll find options to open the app in a
+- Node.js instalado.
+- Expo Go en tu dispositivo móvil o un emulador de Android/iOS.
+- El backend de Laravel en ejecución.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### 2. Clonar el Repositorio
 
 ```bash
-npm run reset-project
+git clone [URL-DEL-REPOSITORIO]
+cd reservas-universidad-mobile-app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 3. Instalar Dependencias
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 4. Configurar el API
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Localiza el archivo `constants/config.ts` o usa un archivo `.env`:
 
-## Join the community
+- **Emulador Android:** `http://10.0.2.2:8000/api`
+- **Dispositivo Físico/Web:** `http://[TU-IP-LOCAL]:8000/api`
 
-Join our community of developers creating universal apps.
+### 5. Iniciar la Aplicación
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npx expo start -c
+```
+
+## 📂 Estructura del Proyecto
+
+- `app/`: Navegación basada en archivos (Expo Router).
+- `components/`: UI custom y componentes reutilizables.
+- `hooks/`: Lógica compartida y React Query.
+- `services/`: Capa de servicios para comunicación con el API de Laravel.
+- `constants/`: Temas (colores institucionales) y configuración global.
+
+## 👥 Credenciales de Prueba (Admin)
+
+- **Email:** `admin@uni.com`
+- **Password:** `admin123`
+
+## 🎨 Identidad Visual
+
+La app utiliza un sistema de diseño basado en:
+
+- **Color Primario:** Verde Institucional (`#10B981`)
+- **Estilo:** Minimalista, Premium, "Rich Aesthetics".
+
+---
+Desarrollado para el sistema de gestión universitaria.
